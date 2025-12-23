@@ -1,3 +1,3 @@
 NSSA on tail (blue VRF) to redistribute static,
-no ipv6 dmvpn,
+no IPv6 dmvpn,
 full redundancy
