@@ -1,0 +1,209 @@
+Building configuration...
+
+Current configuration : 5618 bytes
+!
+! Last configuration change at 18:29:47 UTC Tue Dec 23 2025
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname Body
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition blue
+ rd 5:5
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition green
+ rd 10:10
+ !
+ address-family ipv4
+ exit-address-family
+!
+no logging console
+enable secret 5 $1$X1WU$qriIvR8k0YJZNDa.JbOmZ.
+!
+username admin privilege 15 secret 5 $1$.z7L$Gw9l.R9eRi45mz3UMW1AA.
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip domain-name cisco.com
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback2
+ vrf forwarding blue
+ ip address 192.168.2.2 255.255.255.255
+!
+interface Loopback4
+ vrf forwarding green
+ ip address 172.16.4.4 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description Body->Head VLAN 21,12
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ negotiation auto
+!
+interface Vlan12
+ vrf forwarding blue
+ ip address 192.168.12.2 255.255.255.0
+!
+interface Vlan14
+ vrf forwarding green
+ ip address 172.16.14.4 255.255.255.0
+!
+interface Vlan21
+ vrf forwarding blue
+ ip address 192.168.21.2 255.255.255.0
+!
+interface Vlan23
+ vrf forwarding blue
+ ip address 192.168.23.2 255.255.255.0
+!
+interface Vlan41
+ vrf forwarding green
+ ip address 172.16.41.4 255.255.255.0
+!
+interface Vlan45
+ vrf forwarding green
+ ip address 172.16.45.4 255.255.255.0
+!
+!
+router eigrp as1
+ !
+ address-family ipv4 unicast vrf green autonomous-system 1
+  !
+  topology base
+   redistribute bgp 65001 metric 1000000 10 255 1 1500
+  exit-af-topology
+  network 172.16.4.4 0.0.0.0
+  network 172.16.14.0 0.0.0.255
+  network 172.16.41.0 0.0.0.255
+  network 172.16.45.0 0.0.0.255
+  eigrp router-id 4.4.4.4
+ exit-address-family
+!
+router ospf 1 vrf blue
+ router-id 2.2.2.2
+ capability vrf-lite
+ area 1 nssa
+ redistribute bgp 65001 metric-type 1 subnets
+ network 192.168.2.2 0.0.0.0 area 0
+ network 192.168.12.0 0.0.0.255 area 0
+ network 192.168.21.0 0.0.0.255 area 0
+ network 192.168.23.0 0.0.0.255 area 1
+!
+router bgp 65001
+ bgp log-neighbor-changes
+ !
+ address-family ipv4 vrf blue
+  bgp router-id 2.2.2.2
+  network 192.168.0.0 mask 255.255.0.0
+  neighbor 193.10.203.11 remote-as 100
+  neighbor 193.10.203.11 local-as 100
+  neighbor 193.10.203.11 activate
+ exit-address-family
+ !
+ address-family ipv4 vrf green
+  bgp router-id 4.4.4.4
+  network 172.16.0.0
+  neighbor 172.16.14.1 remote-as 100
+  neighbor 172.16.14.1 local-as 200 no-prepend replace-as
+  neighbor 172.16.14.1 activate
+  neighbor 172.16.41.1 remote-as 100
+  neighbor 172.16.41.1 local-as 200 no-prepend replace-as
+  neighbor 172.16.41.1 activate
+  neighbor 172.16.41.1 route-map PREF in
+  neighbor 172.16.41.1 route-map MED out
+ exit-address-family
+!
+ip forward-protocol nd
+!
+ip http server
+ip http secure-server
+!
+ip route vrf blue 192.168.0.0 255.255.0.0 Null0
+ip route vrf blue 193.10.203.11 255.255.255.255 Vlan12 192.168.12.1
+ip route vrf blue 193.10.203.11 255.255.255.255 Vlan21 192.168.21.1
+ip route vrf green 172.16.0.0 255.255.0.0 Null0
+ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
+!
+route-map PREF permit 20
+ set metric 150
+!
+route-map MED permit 10
+ set metric 50
+!
+!
+!
+control-plane
+!
+banner motd ^C AUthorized USers Only ^C
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+ login local
+line aux 0
+line vty 0 4
+ exec-timeout 0 0
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+!
+end
