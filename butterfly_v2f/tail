@@ -1,0 +1,164 @@
+Building configuration...
+
+Current configuration : 4553 bytes
+!
+! Last configuration change at 18:30:32 UTC Tue Dec 23 2025
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname Tail
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition blue
+ rd 5:5
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition green
+ rd 10:10
+ !
+ address-family ipv4
+ exit-address-family
+!
+no logging console
+enable secret 5 $1$DuWc$JsmY/Q/s8on9e20eHIIa6/
+!
+username admin privilege 15 secret 5 $1$.Hxo$4SfzIEN2dDdq371YBAvhT.
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip domain-name cisco.com
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback3
+ vrf forwarding blue
+ ip address 192.168.3.3 255.255.255.255
+!
+interface Loopback5
+ vrf forwarding green
+ ip address 172.16.5.5 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description TAIL->BODY
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ description TAIL VRF BLUE->TAIL VRF GREEN
+ no switchport
+ vrf forwarding blue
+ ip address 10.35.35.3 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ description TAIL VRF GREEN->TAIL VRF BLUE
+ no switchport
+ vrf forwarding green
+ ip address 10.35.35.5 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ negotiation auto
+!
+interface Vlan23
+ vrf forwarding blue
+ ip address 192.168.23.3 255.255.255.0
+!
+interface Vlan45
+ vrf forwarding green
+ ip address 172.16.45.5 255.255.255.0
+!
+!
+router eigrp as1
+ !
+ address-family ipv4 unicast vrf green autonomous-system 1
+  !
+  topology base
+   redistribute static metric 1000000 1000000 255 1 1500
+  exit-af-topology
+  network 10.35.35.0 0.0.0.255
+  network 172.16.5.5 0.0.0.0
+  network 172.16.45.0 0.0.0.255
+  eigrp router-id 5.5.5.5
+  eigrp stub connected redistributed
+ exit-address-family
+!
+router ospf 1 vrf blue
+ router-id 3.3.3.3
+ capability vrf-lite
+ area 1 nssa
+ redistribute static metric 1000000 subnets
+ network 10.35.35.0 0.0.0.255 area 1
+ network 192.168.3.3 0.0.0.0 area 1
+ network 192.168.23.0 0.0.0.255 area 1
+!
+ip forward-protocol nd
+!
+ip http server
+ip http secure-server
+!
+ip route vrf blue 172.16.0.0 255.255.0.0 GigabitEthernet0/1 10.35.35.5 250
+ip route vrf green 192.168.0.0 255.255.0.0 GigabitEthernet0/2 10.35.35.3 250
+ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
+!
+!
+!
+control-plane
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+ login local
+line aux 0
+line vty 0 4
+ exec-timeout 0 0
+ login local
+ transport input ssh
+line vty 5 15
+ login local
+ transport input ssh
+!
+!
+end
