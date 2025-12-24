@@ -1,0 +1,231 @@
+R4#sh run b
+Building configuration...
+
+
+Current configuration : 3165 bytes
+!
+! Last configuration change at 11:45:50 UTC Mon Dec 15 2025 by admin
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname R4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition blue
+ rd 10:10
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition green
+ rd 5:5
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable secret 5 $1$41Pw$iT9jO7rpaGsjHByt59BGk0
+!
+no aaa new-model
+!
+no ip domain lookup
+ip domain name cisco.com
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+!
+!
+!
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid ISR4321/K9 sn FDO222912XU
+license boot suite AdvUCSuiteK9
+license boot level securityk9
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+!
+!
+username admin privilege 15 secret 5 $1$Lq06$ML2lqM1H5fLy2LC/3IqKL1
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback2
+ vrf forwarding green
+ ip address 200.200.44.44 255.255.255.0
+!
+interface Loopback4
+ vrf forwarding blue
+ ip address 10.10.44.44 255.255.255.0
+ ip ospf network point-to-point
+!
+interface Tunnel1
+ vrf forwarding green
+ ip address 200.200.200.4 255.255.255.0
+ ip nhrp authentication dmvpn
+ ip nhrp network-id 1
+ ip ospf 2 area 0
+ tunnel source 10.10.44.44
+ tunnel destination 10.10.166.166
+ tunnel vrf blue
+!
+interface GigabitEthernet0/0/0
+ description R4->MLS3
+ vrf forwarding blue
+ ip address 10.10.34.4 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ description R4->R5
+ vrf forwarding blue
+ ip address 10.10.45.4 255.255.255.0
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 192.168.1.4 255.255.255.0
+ negotiation auto
+!
+router ospf 1 vrf blue
+ router-id 4.4.4.4
+ auto-cost reference-bandwidth 10000
+ capability vrf-lite
+ network 10.10.34.0 0.0.0.255 area 0
+ network 10.10.44.0 0.0.0.255 area 0
+ network 10.10.45.0 0.0.0.255 area 12
+!
+router ospf 2 vrf green
+ router-id 44.44.44.44
+ auto-cost reference-bandwidth 10000
+ network 200.200.44.0 0.0.0.255 area 0
+ network 200.200.200.0 0.0.0.255 area 0
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+control-plane
+!
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+!
+!
+banner motd ^C Authorized Users Only ^C
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+ login local
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ exec-timeout 0 0
+ login local
+ monitor
+ transport input ssh
+line vty 5 15
+ exec-timeout 0 0
+ login local
+ monitor
+ transport input ssh
+!
+wsma agent exec
+!
+wsma agent config
+!
+wsma agent filesys
+!
+wsma agent notify
+!
+!
+end
