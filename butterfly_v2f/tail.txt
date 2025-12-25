@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 4553 bytes
+Current configuration : 4572 bytes
 !
-! Last configuration change at 18:30:32 UTC Tue Dec 23 2025
+! Last configuration change at 20:53:21 UTC Thu Dec 25 2025 by admin
 !
 version 15.2
 service timestamps debug datetime msec
@@ -85,6 +85,7 @@ interface GigabitEthernet0/1
  no switchport
  vrf forwarding blue
  ip address 10.35.35.3 255.255.255.0
+ shutdown
  negotiation auto
 !
 interface GigabitEthernet0/2
@@ -146,6 +147,35 @@ ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 !
 !
 control-plane
+!
+banner exec ^C
+IOSv - Cisco Systems Confidential -
+
+Supplemental End User License Restrictions
+
+This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
+
+By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
+^C
+banner incoming ^C
+IOSv - Cisco Systems Confidential -
+
+Supplemental End User License Restrictions
+
+This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
+
+By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
+^C
+banner login ^C
+IOSv - Cisco Systems Confidential -
+
+Supplemental End User License Restrictions
+
+This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
+
+By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
+^C
+banner motd ^C AUthorized USers Only ^C
 !
 line con 0
  exec-timeout 0 0
