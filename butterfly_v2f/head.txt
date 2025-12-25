@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 7858 bytes
+Current configuration : 7842 bytes
 !
-! Last configuration change at 20:51:37 UTC Thu Dec 25 2025 by admin
+! Last configuration change at 21:01:26 UTC Thu Dec 25 2025 by admin
 !
 version 17.3
 service timestamps debug datetime msec
@@ -230,8 +230,6 @@ interface GigabitEthernet4
  negotiation auto
  no mop enabled
  no mop sysid
-!
-router ospf 1
 !
 router bgp 100
  bgp router-id 1.1.1.1
