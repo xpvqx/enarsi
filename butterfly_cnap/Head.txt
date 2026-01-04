@@ -1,0 +1,349 @@
+
+!
+! Last configuration change at 16:27:39 UTC Sun Jan 4 2026 by admin
+!
+version 16.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+! Call-home is enabled by Smart-Licensing.
+service call-home
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+!
+hostname Head
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 9 $9$Gs5lgHu5PJrXek$ToTQVlVSE7uvAJwJ/GTOF/MNe8lb9WExbgLOB6k5Dx.
+!
+no aaa new-model
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile "CiscoTAC-1"
+  active
+  destination transport-method http
+  no destination transport-method email
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name cisco.com
+!
+!
+!
+login on-success log
+ipv6 unicast-routing
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-2738643254
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2738643254
+ revocation-check none
+ rsakeypair TP-self-signed-2738643254
+!
+crypto pki trustpoint SLA-TrustPoint
+ enrollment pkcs12
+ revocation-check crl
+!
+!
+crypto pki certificate chain TP-self-signed-2738643254
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 32373338 36343332 3534301E 170D3236 30313034 31343537 
+  35345A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 37333836 
+  34333235 34308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 0100C30D 91CBC0B7 E7ACC082 39BAD805 6445E5A5 BFF08177 CCDAFAEC 
+  7723507C 72AE56F5 9F981E90 78DBA7EE D49E8DBF D97D61A6 3F7E8AA2 F90B7B3D 
+  B8C8FFDC 09D4ED45 4BD64826 A493B7C0 4507DBA7 6B26BDB9 F25AB686 5DB7E994 
+  C3DFCFB2 0B1C5480 07C178F3 D3B6A7EA 23F80616 55D8D9F2 92412571 32B60D7C 
+  67438BEA AC4196E7 1F3932FA 7F1A659F 6F9F7DB9 281CE98C 4E09ED7E 110E2DF2 
+  322BB3CE 0255F6FE 057C91D2 AD262C17 1A216FAC 7988A562 D0341591 0E592F01 
+  3354F781 0386982B 8BE356F0 CF37FCF6 E6839E9F 065A5351 87375D85 1C4B984D 
+  8FB66EF9 A8356D3E 25A6AE07 A764FE29 5BEC7DB0 79425FDC 7DE6B7ED 8C019893 
+  7A7F3208 97670203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 1483204C FC3AF2FB 9CD59F8E 4471425A 47F88CDC 
+  DD301D06 03551D0E 04160414 83204CFC 3AF2FB9C D59F8E44 71425A47 F88CDCDD 
+  300D0609 2A864886 F70D0101 05050003 82010100 79081F85 35EA7FA1 77989191 
+  CF512D58 E65A6CB3 B9DB74B6 BC6CE756 89F230AA 3585CBEC 472BFC84 E014C4D5 
+  1C9F4AD5 B33C59B0 112BD24A F568C090 54172E36 3DC8F20F 5E6D3878 2ACE2249 
+  192D1935 8E2B82B4 847A3258 5FD0A911 E69C903E 85F511C6 A5F9AF4C A57E9ECC 
+  9E0988F3 F8EF1EFA 34CDD236 D5E6421D 529D1C2B 3DA54375 5CF5E1C2 629BA24E 
+  05D11C9C 1700F003 6DDC8CBD 346C822C 61719E78 DDE37E58 593A4CC9 D7827080 
+  D7A46939 BB06EBCD 2C21B7BE 4FBF5061 D701F83C E712CDFC 376D44CA 642F36B7 
+  F3D7AEC1 DBAA5D51 BCFE38EF 337D2EAD 06DA33C3 6EFEB95F 73EC36DE D10D2DE6 
+  36D4DE7D E01951C1 6BB815BC 673E27AC 94F9F07D
+  	quit
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+  	quit
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no license feature hseck9
+license udi pid ISR4321/K9 sn FDO24380JV6
+license boot suite FoundationSuiteK9
+license boot suite AdvUCSuiteK9
+memory free low-watermark processor 67065
+!
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+username admin privilege 15 secret 9 $9$gbeMKHxQdYK0O.$6bPwhg5pOSJxDOn1ZbeyMBg.kTaDRQnUFrvuK43HzVA
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback8
+ description NET STATEMENT
+ ip address 8.8.8.8 255.255.255.0
+!
+interface Loopback11
+ description NOT ANNOUNCED IN DYNAMIC
+ ip address 193.10.203.11 255.255.255.255
+!
+interface Loopback12
+ description REDIST CONNECTED
+ ip address 12.12.11.11 255.255.255.0
+!
+interface Loopback100
+ description IPV6 LO FOR DMVPN TRACE
+ no ip address
+ ipv6 address FE80::100 link-local
+ ipv6 address 2001:DB8:ACAD:100::1/64
+ ipv6 enable
+ ipv6 ospf 100 area 0
+!
+interface Tunnel1
+ description TUN HEAD->TAIL | Tail: trace ipv6 2001:db8:acad:100::1 source 2001:db8:acad:300::1
+ no ip address
+ no ip redirects
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:ACAD:1::1/64
+ ipv6 enable
+ ipv6 nhrp authentication cisco
+ ipv6 nhrp map 2001:DB8:ACAD:1::2/64 192.168.23.3
+ ipv6 nhrp network-id 1
+ ipv6 ospf 100 area 0
+ tunnel source 192.168.21.1
+ tunnel mode gre multipoint
+ tunnel key 123
+!
+interface GigabitEthernet0/0/0
+ description HEAD->TAIL
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/0.12
+ description BLUE.12
+ encapsulation dot1Q 12
+ ip address 192.168.12.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0.14
+ description GREEN.14
+ encapsulation dot1Q 14
+ ip address 172.16.14.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0.21
+ description BLUE.21
+ encapsulation dot1Q 21
+ ip address 192.168.21.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0.41
+ description GREEN.41
+ encapsulation dot1Q 41
+ ip address 172.16.41.1 255.255.255.0
+!
+interface GigabitEthernet0/0/1
+ description UNUSED PORTS
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ description UNUSED PORTS
+ shutdown
+!
+interface Serial0/1/1
+ description UNUSED PORTS
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ ip address 10.0.0.1 255.255.255.0
+ negotiation auto
+!
+router bgp 100
+ bgp router-id 1.1.1.1
+ bgp log-neighbor-changes
+ neighbor 172.16.14.4 remote-as 200
+ neighbor 172.16.41.4 remote-as 200
+ neighbor 192.168.12.2 remote-as 100
+ neighbor 192.168.21.2 remote-as 100
+ !
+ address-family ipv4
+  network 8.8.8.0 mask 255.255.255.0
+  redistribute connected route-map REDIST
+  neighbor 172.16.14.4 activate
+  neighbor 172.16.41.4 activate
+  neighbor 192.168.12.2 activate
+  neighbor 192.168.21.2 activate
+ exit-address-family
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip tftp source-interface GigabitEthernet0
+ip ssh version 2
+!
+!
+!
+!
+ip prefix-list BLOCK11 seq 5 permit 193.10.203.11/32
+ipv6 router ospf 100
+ router-id 100.100.100.1
+!
+!
+!
+route-map REDIST deny 10 
+ match ip address prefix-list BLOCK11
+!
+route-map REDIST permit 20 
+!
+!
+!
+!
+control-plane
+!
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+!
+!
+banner motd  Authorized Users Only 
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ exec-timeout 0 0
+ login local
+ monitor
+ transport input ssh
+line vty 5 15
+ exec-timeout 0 0
+ login local
+ monitor
+ transport input ssh
+!
+!
+!
+!
+!
+!
+end
