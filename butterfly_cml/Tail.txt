@@ -1,0 +1,199 @@
+Building configuration...
+
+Current configuration : 3403 bytes
+!
+! Last configuration change at 04:17:08 UTC Sun Jan 4 2026 by admin
+!
+version 17.12
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname Tail
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition BLUE
+ rd 5:5
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition GREEN
+ rd 10:10
+ !
+ address-family ipv4
+ exit-address-family
+!
+no logging console
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip audit notify log
+ip audit po max-events 100
+no ip domain lookup
+ip domain name cisco.com
+ip cef
+login on-success log
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+vtp version 1
+multilink bundle-name authenticated
+!
+!
+!
+!
+memory free low-watermark processor 80589
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+enable secret 9 $9$qpYCohgPqkZjmk$MXGm2FHdSIsSeTnX2.HgZt90HAjFXafdTBDebjPdrR.
+!
+username admin privilege 15 secret 9 $9$tVl.5.gBKpmD6E$hzxSQ8QYUv.0ztM96U1BFmcn0cogbe7e.rInzU.0Esg
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+interface Loopback3
+ vrf forwarding BLUE
+ ip address 192.168.3.3 255.255.255.255
+!
+interface Loopback5
+ vrf forwarding GREEN
+ ip address 172.16.5.5 255.255.255.255
+!
+interface Loopback100
+ description IPV6 LOOP FOR DMVPN
+ no ip address
+ ipv6 address FE80::3 link-local
+ ipv6 address 2001:DB8:ACAD:3::3/64
+ ipv6 ospf 1 area 0
+!
+interface Tunnel100
+ description TUNNEL TAIL.BLUE->HEAD
+ no ip address
+ no ip redirects
+ ipv6 address FE80::102 link-local
+ ipv6 address 2001:DB8:ACAD:100::2/64
+ ipv6 enable
+ ipv6 nhrp authentication cisco
+ ipv6 nhrp network-id 1
+ ipv6 nhrp nhs 2001:DB8:ACAD:100::1 nbma 192.168.21.1 multicast
+ ipv6 ospf 1 area 0
+ tunnel source 192.168.23.3
+ tunnel mode gre multipoint
+ tunnel key 123
+ tunnel vrf BLUE
+!
+interface Ethernet0/0
+!
+interface Ethernet0/1
+ description TAIL.BLUE->TAIL.GREEN
+ no switchport
+ vrf forwarding BLUE
+ ip address 10.35.35.3 255.255.255.0
+!
+interface Ethernet0/2
+ description TAIL.GREEN->TAIL.BLUE
+ no switchport
+ vrf forwarding GREEN
+ ip address 10.35.35.5 255.255.255.0
+!
+interface Ethernet0/3
+ description UNUSED PORTS
+ shutdown
+!
+interface Vlan23
+ vrf forwarding BLUE
+ ip address 192.168.23.3 255.255.255.0
+!
+interface Vlan45
+ vrf forwarding GREEN
+ ip address 172.16.45.5 255.255.255.0
+!
+!
+router eigrp AS1
+ !
+ address-family ipv4 unicast vrf GREEN autonomous-system 1
+  !
+  topology base
+   redistribute static metric 1000000 1000000 255 1 1500
+  exit-af-topology
+  network 10.35.35.0 0.0.0.255
+  network 172.16.5.5 0.0.0.0
+  network 172.16.45.0 0.0.0.255
+  eigrp router-id 5.5.5.5
+  eigrp stub connected redistributed
+ exit-address-family
+!
+router ospf 1 vrf BLUE
+ router-id 3.3.3.3
+ capability vrf-lite
+ area 10 nssa
+ redistribute static metric 1000000 metric-type 1
+ network 10.35.35.0 0.0.0.255 area 10
+ network 192.168.3.3 0.0.0.0 area 10
+ network 192.168.23.0 0.0.0.255 area 10
+!
+ip forward-protocol nd
+!
+!
+ip http server
+ip http secure-server
+ip ssh bulk-mode 131072
+ip route vrf BLUE 172.16.0.0 255.255.0.0 Ethernet0/1 10.35.35.5 250
+ip route vrf GREEN 192.168.0.0 255.255.0.0 Ethernet0/2 10.35.35.3 250
+!
+!
+ipv6 router ospf 1
+ router-id 33.33.33.33
+!
+!
+!
+!
+!
+control-plane
+!
+!
+banner motd ^C Authorized Users Only ^C
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+ login local
+line aux 0
+line vty 0 4
+ exec-timeout 0 0
+ login local
+ monitor
+ transport input ssh
+!
+!
+end
