@@ -1,14 +1,13 @@
 Building configuration...
 
-Current configuration : 6086 bytes
+Current configuration : 4121 bytes
 !
-! Last configuration change at 03:35:57 UTC Fri Jan 2 2026
+! Last configuration change at 04:16:42 UTC Sun Jan 4 2026 by admin
 !
-version 15.2
+version 17.12
 service timestamps debug datetime msec
 service timestamps log datetime msec
 service password-encryption
-service compress-config
 !
 hostname Body
 !
@@ -21,6 +20,9 @@ vrf definition BLUE
  !
  address-family ipv4
  exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
 !
 vrf definition GREEN
  rd 10:10
@@ -29,9 +31,6 @@ vrf definition GREEN
  exit-address-family
 !
 no logging console
-enable secret 5 $1$2REB$rPzkbyhK7lizIeuVzZFCT/
-!
-username admin privilege 15 secret 5 $1$LTF4$XYGC9il/hmnIJoYqnjsVZ0
 no aaa new-model
 !
 !
@@ -41,90 +40,94 @@ no aaa new-model
 !
 !
 !
-no ip domain-lookup
-ip domain-name cisco.com
+!
+!
+!
+!
+!
+ip audit notify log
+ip audit po max-events 100
+no ip domain lookup
+ip domain name cisco.com
 ip cef
-no ipv6 cef
+login on-success log
+ipv6 unicast-routing
+ipv6 cef
 !
 !
 !
-spanning-tree mode pvst
+!
+!
+!
+!
+vtp version 1
+multilink bundle-name authenticated
+!
+!
+!
+!
+memory free low-watermark processor 80589
+!
+!
+spanning-tree mode rapid-pvst
 spanning-tree extend system-id
+enable secret 9 $9$dlz7YLmT3mOC..$Q7FsTV3WLcrL1zkpQOHk6ikw7k22TD2LB1aa83EU3FQ
 !
+username admin privilege 15 secret 9 $9$m6mJ8HL9vbz6K.$ilrRHlg0Y8sHoFUW3zR0rfknD5fJ5MlU5gqR8omOkf.
 !
-! 
-!
-!
-!
-!
-!
-!
-!
+vlan internal allocation policy ascending
 !
 !
 !
 !
 !
 interface Loopback2
- description BLUE.LO2
  vrf forwarding BLUE
  ip address 192.168.2.2 255.255.255.255
 !
 interface Loopback4
- description GREEN.LO4
  vrf forwarding GREEN
  ip address 172.16.4.4 255.255.255.255
 !
-interface GigabitEthernet0/0
- description Body->Head (TRUNK)
+interface Ethernet0/0
+ description Body->Head
  switchport trunk encapsulation dot1q
  switchport mode trunk
- negotiation auto
 !
-interface GigabitEthernet0/1
- description Body->Head (TRUNK)
+interface Ethernet0/1
+ description Body->Tail
  switchport trunk encapsulation dot1q
  switchport mode trunk
- negotiation auto
 !
-interface GigabitEthernet0/2
- description Body->Tail (TRUNK)
- switchport trunk encapsulation dot1q
- switchport mode trunk
- negotiation auto
-!
-interface GigabitEthernet0/3
- description UNUSED PORT
+interface Ethernet0/2
+ description UNUSED PORTS
  shutdown
- negotiation auto
+!
+interface Ethernet0/3
+ description UNUSED PORTS
+ shutdown
 !
 interface Vlan12
- description SVI BLUE.12
  vrf forwarding BLUE
  ip address 192.168.12.2 255.255.255.0
 !
 interface Vlan14
- description SVI GREEN.14
  vrf forwarding GREEN
  ip address 172.16.14.4 255.255.255.0
 !
 interface Vlan21
- description SVI BLUE.21
  vrf forwarding BLUE
  ip address 192.168.21.2 255.255.255.0
 !
 interface Vlan23
- description SVI BLUE.23
  vrf forwarding BLUE
  ip address 192.168.23.2 255.255.255.0
 !
 interface Vlan41
- description SVI GREEN.41
  vrf forwarding GREEN
  ip address 172.16.41.4 255.255.255.0
 !
 interface Vlan45
- description SVI GREEN.45
  vrf forwarding GREEN
  ip address 172.16.45.4 255.255.255.0
 !
@@ -147,8 +150,8 @@ router ospf 1 vrf BLUE
  router-id 2.2.2.2
  capability vrf-lite
  area 10 nssa
- redistribute bgp 65001 metric-type 1 subnets
- network 192.168.2.2 0.0.0.0 area 0
+ redistribute bgp 65001 metric-type 1
+ network 192.168.3.3 0.0.0.0 area 0
  network 192.168.12.0 0.0.0.255 area 0
  network 192.168.21.0 0.0.0.255 area 0
  network 192.168.23.0 0.0.0.255 area 10
@@ -158,11 +161,10 @@ router bgp 65001
  !
  address-family ipv4 vrf BLUE
   bgp router-id 2.2.2.2
-  network 192.168.0.0 mask 255.255.0.0
+  aggregate-address 192.168.0.0 255.255.0.0 summary-only
   neighbor 193.10.203.11 remote-as 100
   neighbor 193.10.203.11 local-as 100
   neighbor 193.10.203.11 activate
-  maximum-paths 2
  exit-address-family
  !
  address-family ipv4 vrf GREEN
@@ -181,59 +183,31 @@ router bgp 65001
 !
 ip forward-protocol nd
 !
+!
 ip http server
 ip http secure-server
-!
+ip ssh bulk-mode 131072
 ip route vrf BLUE 192.168.0.0 255.255.0.0 Null0
 ip route vrf BLUE 193.10.203.11 255.255.255.255 192.168.12.1
 ip route vrf BLUE 193.10.203.11 255.255.255.255 192.168.21.1
-ip ssh version 2
-ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
-ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
 !
 !
 !
-!
-route-map NICE_MED permit 10
+route-map NICE_MED permit 10 
  set metric 50
 !
-route-map BAD_MED permit 10
+route-map NICE_PREF permit 10 
+ set local-preference 150
+!
+route-map BAD_MED permit 10 
  set metric 100
 !
-route-map NICE_PREF permit 10
- set local-preference 150
 !
 !
 !
 control-plane
 !
-banner exec ^C
-IOSv - Cisco Systems Confidential -
-
-Supplemental End User License Restrictions
-
-This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
-
-By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
-^C
-banner incoming ^C
-IOSv - Cisco Systems Confidential -
-
-Supplemental End User License Restrictions
-
-This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
-
-By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
-^C
-banner login ^C
-IOSv - Cisco Systems Confidential -
-
-Supplemental End User License Restrictions
-
-This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
-
-By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
-^C
+!
 banner motd ^C Authorized Users Only ^C
 !
 line con 0
@@ -244,10 +218,7 @@ line aux 0
 line vty 0 4
  exec-timeout 0 0
  login local
- transport input ssh
-line vty 5 15
- exec-timeout 0 0
- login local
+ monitor
  transport input ssh
 !
 !
