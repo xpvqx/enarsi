@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 16:27:39 UTC Sun Jan 4 2026 by admin
+! Last configuration change at 18:14:30 UTC Mon Jan 5 2026 by admin
 !
 version 16.12
 service timestamps debug datetime msec
@@ -11,7 +11,7 @@ service call-home
 platform qfp utilization monitor load 80
 platform punt-keepalive disable-kernel-core
 !
-hostname Head
+hostname HEAD
 !
 boot-start-marker
 boot-end-marker
@@ -25,7 +25,7 @@ vrf definition Mgmt-intf
  address-family ipv6
  exit-address-family
 !
-enable secret 9 $9$Gs5lgHu5PJrXek$ToTQVlVSE7uvAJwJ/GTOF/MNe8lb9WExbgLOB6k5Dx.
+enable secret 9 $9$9sN1KxmaGxAl2.$P3r.FhzXu0MQ/9bEPjngojg6n7IMVgLVRA/Nd7Xc/PU
 !
 no aaa new-model
 call-home
@@ -36,12 +36,6 @@ call-home
   active
   destination transport-method http
   no destination transport-method email
-!
-!
-!
-!
-!
-!
 !
 no ip domain lookup
 ip domain name cisco.com
@@ -63,56 +57,49 @@ subscriber templating
 ! 
 ! 
 !
-!
 multilink bundle-name authenticated
 !
 !
 !
-!
-!
-!
-!
-!
-!
-crypto pki trustpoint TP-self-signed-2738643254
+crypto pki trustpoint TP-self-signed-3452520445
  enrollment selfsigned
- subject-name cn=IOS-Self-Signed-Certificate-2738643254
+ subject-name cn=IOS-Self-Signed-Certificate-3452520445
  revocation-check none
- rsakeypair TP-self-signed-2738643254
+ rsakeypair TP-self-signed-3452520445
 !
 crypto pki trustpoint SLA-TrustPoint
  enrollment pkcs12
  revocation-check crl
 !
 !
-crypto pki certificate chain TP-self-signed-2738643254
+crypto pki certificate chain TP-self-signed-3452520445
  certificate self-signed 01
   30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
   31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
-  69666963 6174652D 32373338 36343332 3534301E 170D3236 30313034 31343537 
-  35345A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
-  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 37333836 
-  34333235 34308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
-  0A028201 0100C30D 91CBC0B7 E7ACC082 39BAD805 6445E5A5 BFF08177 CCDAFAEC 
-  7723507C 72AE56F5 9F981E90 78DBA7EE D49E8DBF D97D61A6 3F7E8AA2 F90B7B3D 
-  B8C8FFDC 09D4ED45 4BD64826 A493B7C0 4507DBA7 6B26BDB9 F25AB686 5DB7E994 
-  C3DFCFB2 0B1C5480 07C178F3 D3B6A7EA 23F80616 55D8D9F2 92412571 32B60D7C 
-  67438BEA AC4196E7 1F3932FA 7F1A659F 6F9F7DB9 281CE98C 4E09ED7E 110E2DF2 
-  322BB3CE 0255F6FE 057C91D2 AD262C17 1A216FAC 7988A562 D0341591 0E592F01 
-  3354F781 0386982B 8BE356F0 CF37FCF6 E6839E9F 065A5351 87375D85 1C4B984D 
-  8FB66EF9 A8356D3E 25A6AE07 A764FE29 5BEC7DB0 79425FDC 7DE6B7ED 8C019893 
-  7A7F3208 97670203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
-  301F0603 551D2304 18301680 1483204C FC3AF2FB 9CD59F8E 4471425A 47F88CDC 
-  DD301D06 03551D0E 04160414 83204CFC 3AF2FB9C D59F8E44 71425A47 F88CDCDD 
-  300D0609 2A864886 F70D0101 05050003 82010100 79081F85 35EA7FA1 77989191 
-  CF512D58 E65A6CB3 B9DB74B6 BC6CE756 89F230AA 3585CBEC 472BFC84 E014C4D5 
-  1C9F4AD5 B33C59B0 112BD24A F568C090 54172E36 3DC8F20F 5E6D3878 2ACE2249 
-  192D1935 8E2B82B4 847A3258 5FD0A911 E69C903E 85F511C6 A5F9AF4C A57E9ECC 
-  9E0988F3 F8EF1EFA 34CDD236 D5E6421D 529D1C2B 3DA54375 5CF5E1C2 629BA24E 
-  05D11C9C 1700F003 6DDC8CBD 346C822C 61719E78 DDE37E58 593A4CC9 D7827080 
-  D7A46939 BB06EBCD 2C21B7BE 4FBF5061 D701F83C E712CDFC 376D44CA 642F36B7 
-  F3D7AEC1 DBAA5D51 BCFE38EF 337D2EAD 06DA33C3 6EFEB95F 73EC36DE D10D2DE6 
-  36D4DE7D E01951C1 6BB815BC 673E27AC 94F9F07D
+  69666963 6174652D 33343532 35323034 3435301E 170D3236 30313035 31343331 
+  33385A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 34353235 
+  32303434 35308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 01009F12 22F4FC8F 9352E033 BB2ED769 B5CA2C36 4E53C46B 9BB493EB 
+  BE2A2A7E 65DDE582 EE767DF1 BAE05EC7 69471BDA 4B967C7B A69BA648 9999B3EA 
+  3C1951C4 1845700F E9B089BA 08A34240 F9A148C6 599AB596 B9CA808A 7C4D4281 
+  27EA26FC C8A04E2A 411FDE29 0E6C3624 42AC6E47 74410C91 1E9BA651 449C9DE2 
+  A0F53DFB F32F0AA4 19DEE701 DB81C575 6068ECFB 1BF05123 AE72E94D DF850C86 
+  9408DDB5 9D56AA59 B1291AF3 630FD38E 3223EDB3 8898A389 CA9129A0 68DD7F54 
+  2F03B9A0 3D895F87 880D5F75 7BC5870E 6B713298 FE23729D 25199FC5 0566D2DA 
+  B194862F 83F49FC3 99BA2A09 F25969E3 55B49E67 B805965A 54E675A5 847A9AA7 
+  055563CA 1E890203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 14F6CDC8 A13112D0 D851D2C3 8192DB5A A60EF9AA 
+  B3301D06 03551D0E 04160414 F6CDC8A1 3112D0D8 51D2C381 92DB5AA6 0EF9AAB3 
+  300D0609 2A864886 F70D0101 05050003 82010100 8F5D41E4 BD7CD8C6 F0E55014 
+  B8F1A174 23D2A246 3B249BA5 42927DEF B8166E03 9A34FA24 5526601E F74E5D4D 
+  7273C053 CF8A5916 F197A84F 900357B6 7395BE89 903A9AAC 5309D042 6B701FDA 
+  3AF98148 C2B03F28 987AF850 6D8F18A6 8F3CB743 4492CB7A 7089069A AAB81CF1 
+  E1DAF8BB 6C68EC57 5E48F5A8 81BF8B00 A29A9379 56F1E4F1 3A56961F 2F42E2CE 
+  05DEAFBD 57FADC51 A43300E3 C04237C9 EDA2C302 06CF23B6 5AA7134F 10AAB9DA 
+  B0255731 55B5FFED 9C561C57 DE3D624E 4612795C 0F24A850 84614137 A8532DBC 
+  1B6D4BEA ABCD468D 76167377 81D417A4 5BA50A79 7D17D97E 2E5F76B7 7FEABDC3 
+  82FD8B90 67E081EA 85CB5E9D E24B64C0 913606A8
   	quit
 crypto pki certificate chain SLA-TrustPoint
  certificate ca 01
@@ -145,28 +132,18 @@ crypto pki certificate chain SLA-TrustPoint
   	quit
 !
 !
-!
-!
-!
-!
-!
-!
-!
 no license feature hseck9
-license udi pid ISR4321/K9 sn FDO24380JV6
-license boot suite FoundationSuiteK9
-license boot suite AdvUCSuiteK9
+license udi pid ISR4321/K9 sn FDO222913HQ
 memory free low-watermark processor 67065
 !
 diagnostic bootup level minimal
 !
 spanning-tree extend system-id
 !
-username admin privilege 15 secret 9 $9$gbeMKHxQdYK0O.$6bPwhg5pOSJxDOn1ZbeyMBg.kTaDRQnUFrvuK43HzVA
+username admin privilege 15 secret 9 $9$BKr34JCBw2ezQU$h/HJs8/NYrWVMbwFOzcCoMlwknS/cYQVYYf5dlus0sc
 !
 redundancy
  mode none
-!
 !
 !
 !
@@ -189,19 +166,19 @@ redundancy
 !
 !
 interface Loopback8
- description NET STATEMENT
+ description NETWORK STATEMENT
  ip address 8.8.8.8 255.255.255.0
 !
 interface Loopback11
- description NOT ANNOUNCED IN DYNAMIC
+ description NOT ADVERTISED DYNAMIC
  ip address 193.10.203.11 255.255.255.255
 !
 interface Loopback12
- description REDIST CONNECTED
+ description REDISTRIBUTE CONNECTED
  ip address 12.12.11.11 255.255.255.0
 !
 interface Loopback100
- description IPV6 LO FOR DMVPN TRACE
+ description FOR IPV6 DMVPN TRACE
  no ip address
  ipv6 address FE80::100 link-local
  ipv6 address 2001:DB8:ACAD:100::1/64
@@ -209,47 +186,45 @@ interface Loopback100
  ipv6 ospf 100 area 0
 !
 interface Tunnel1
- description TUN HEAD->TAIL | Tail: trace ipv6 2001:db8:acad:100::1 source 2001:db8:acad:300::1
+ description DMVPN HEAD->TAIL
  no ip address
  no ip redirects
  ipv6 address FE80::1 link-local
  ipv6 address 2001:DB8:ACAD:1::1/64
- ipv6 enable
  ipv6 nhrp authentication cisco
  ipv6 nhrp map 2001:DB8:ACAD:1::2/64 192.168.23.3
  ipv6 nhrp network-id 1
  ipv6 ospf 100 area 0
- tunnel source 192.168.21.1
+ tunnel source 192.168.12.1
  tunnel mode gre multipoint
  tunnel key 123
 !
 interface GigabitEthernet0/0/0
- description HEAD->TAIL
+ description HEAD->BODY
  no ip address
  negotiation auto
 !
 interface GigabitEthernet0/0/0.12
- description BLUE.12
+ description BLUE12
  encapsulation dot1Q 12
  ip address 192.168.12.1 255.255.255.0
 !
 interface GigabitEthernet0/0/0.14
- description GREEN.14
+ description GREEN14
  encapsulation dot1Q 14
  ip address 172.16.14.1 255.255.255.0
 !
 interface GigabitEthernet0/0/0.21
- description BLUE.21
+ description BLUE21
  encapsulation dot1Q 21
  ip address 192.168.21.1 255.255.255.0
 !
 interface GigabitEthernet0/0/0.41
- description GREEN.41
+ description GREEN41
  encapsulation dot1Q 41
  ip address 172.16.41.1 255.255.255.0
 !
 interface GigabitEthernet0/0/1
- description UNUSED PORTS
  no ip address
  shutdown
  negotiation auto
@@ -272,16 +247,16 @@ router bgp 100
  bgp log-neighbor-changes
  neighbor 172.16.14.4 remote-as 200
  neighbor 172.16.41.4 remote-as 200
- neighbor 192.168.12.2 remote-as 100
- neighbor 192.168.21.2 remote-as 100
+ neighbor 192.168.2.2 remote-as 100
+ neighbor 192.168.2.2 update-source Loopback11
  !
  address-family ipv4
   network 8.8.8.0 mask 255.255.255.0
   redistribute connected route-map REDIST
   neighbor 172.16.14.4 activate
   neighbor 172.16.41.4 activate
-  neighbor 192.168.12.2 activate
-  neighbor 192.168.21.2 activate
+  neighbor 192.168.2.2 activate
+  neighbor 192.168.2.2 next-hop-self
  exit-address-family
 !
 ip forward-protocol nd
@@ -289,44 +264,33 @@ ip http server
 ip http authentication local
 ip http secure-server
 ip tftp source-interface GigabitEthernet0
+ip route 192.168.2.2 255.255.255.255 GigabitEthernet0/0/0.12 192.168.12.2
+ip route 192.168.2.2 255.255.255.255 GigabitEthernet0/0/0.21 192.168.21.2
 ip ssh version 2
 !
 !
 !
 !
-ip prefix-list BLOCK11 seq 5 permit 193.10.203.11/32
+ip prefix-list BLOCK11 seq 5 deny 193.10.203.11/32
+ip prefix-list BLOCK11 seq 10 permit 0.0.0.0/0 le 32
 ipv6 router ospf 100
  router-id 100.100.100.1
 !
 !
 !
-route-map REDIST deny 10 
+route-map REDIST permit 10 
  match ip address prefix-list BLOCK11
-!
-route-map REDIST permit 20 
-!
 !
 !
 !
 control-plane
-!
-!
-mgcp behavior rsip-range tgcp-only
-mgcp behavior comedia-role none
-mgcp behavior comedia-check-media-src disable
-mgcp behavior comedia-sdp-force disable
-!
-mgcp profile default
-!
-!
-!
-!
 !
 banner motd  Authorized Users Only 
 !
 line con 0
  exec-timeout 0 0
  logging synchronous
+ login local
  stopbits 1
 line aux 0
  stopbits 1
