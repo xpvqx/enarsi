@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 16:32:42 UTC Sun Jan 4 2026 by admin
+! Last configuration change at 18:15:41 UTC Mon Jan 5 2026 by admin
 !
 version 17.12
 service timestamps debug datetime msec
@@ -8,7 +8,7 @@ service timestamps log datetime msec
 service password-encryption
 platform punt-keepalive disable-kernel-core
 !
-hostname Body
+hostname BODY
 !
 !
 vrf definition BLUE
@@ -49,8 +49,6 @@ ip domain name cisco.com
 !
 !
 login on-success log
-ipv6 nd cache expire refresh
-ipv6 unicast-routing
 !
 !
 !
@@ -71,9 +69,9 @@ spanning-tree mode rapid-pvst
 spanning-tree extend system-id
 !
 !
-enable secret 9 $9$YHlAjFebGUuMOU$JVvr5HgywoFJFMP7gouE3p9Pnvw0AoP.ZPw5KDRQiO2
+enable secret 9 $9$YgddHdq/OIlktU$O/m/0zNRZuxwwR2dmbKeLjPBUGfyVui45oS73VI6rg6
 !
-username admin privilege 15 secret 9 $9$vOFMrwY00c8oFE$JNbtDTWeEcIyNVj1RMvbVf3xo5aQKZmI5UakejXFvoI
+username admin privilege 15 secret 9 $9$SQAac7WAqnBYFE$KDFd4mw5VWmLZj9c3bKKzRauXR.OEAoWF0mpbJNYAr6
 !
 redundancy
  mode sso
@@ -145,10 +143,13 @@ policy-map system-cpp-policy
 !
 !
 interface Loopback2
+ description LO2 BLUE
  vrf forwarding BLUE
  ip address 192.168.2.2 255.255.255.255
+ ip ospf network point-to-point
 !
 interface Loopback4
+ description LO4 GREEN
  vrf forwarding GREEN
  ip address 172.16.4.4 255.255.255.255
 !
@@ -158,9 +159,11 @@ interface GigabitEthernet0/0
  negotiation auto
 !
 interface GigabitEthernet1/0/1
+ description BODY->HEAD
  switchport mode trunk
 !
 interface GigabitEthernet1/0/2
+ description BODY->TAIL
  switchport mode trunk
 !
 interface GigabitEthernet1/0/3
@@ -273,26 +276,35 @@ interface Vlan1
  no ip address
 !
 interface Vlan12
+ description SVI VLAN12 BLUE
  vrf forwarding BLUE
  ip address 192.168.12.2 255.255.255.0
+ ip ospf network point-to-point
 !
 interface Vlan14
+ description SVI VLAN14 GREEN
  vrf forwarding GREEN
  ip address 172.16.14.4 255.255.255.0
 !
 interface Vlan21
+ description SVI VLAN21 BLUE
  vrf forwarding BLUE
  ip address 192.168.21.2 255.255.255.0
+ ip ospf network point-to-point
 !
 interface Vlan23
+ description SVI VLAN23 BLUE
  vrf forwarding BLUE
  ip address 192.168.23.2 255.255.255.0
+ ip ospf network point-to-point
 !
 interface Vlan41
+ description SVI VLAN41 GREEN
  vrf forwarding GREEN
  ip address 172.16.41.4 255.255.255.0
 !
 interface Vlan45
+ description SVI VLAN45 GREEN
  vrf forwarding GREEN
  ip address 172.16.45.4 255.255.255.0
 !
@@ -313,10 +325,11 @@ router eigrp AS1
 !
 router ospf 1 vrf BLUE
  router-id 2.2.2.2
+ auto-cost reference-bandwidth 10000
  capability vrf-lite
  area 10 nssa
  redistribute bgp 65001 metric-type 1
- network 192.168.3.3 0.0.0.0 area 0
+ network 192.168.2.2 0.0.0.0 area 0
  network 192.168.12.0 0.0.0.255 area 0
  network 192.168.21.0 0.0.0.255 area 0
  network 192.168.23.0 0.0.0.255 area 10
@@ -326,9 +339,10 @@ router bgp 65001
  !
  address-family ipv4 vrf BLUE
   bgp router-id 2.2.2.2
-  aggregate-address 192.168.0.0 255.255.0.0 summary-only
+  network 192.168.0.0 mask 255.255.0.0
   neighbor 193.10.203.11 remote-as 100
   neighbor 193.10.203.11 local-as 100
+  neighbor 193.10.203.11 update-source Loopback2
   neighbor 193.10.203.11 activate
  exit-address-family
  !
@@ -351,20 +365,20 @@ ip http server
 ip http secure-server
 ip tftp source-interface GigabitEthernet0/0
 ip route vrf BLUE 192.168.0.0 255.255.0.0 Null0
-ip route vrf BLUE 193.10.203.11 255.255.255.255 192.168.12.1
 ip route vrf BLUE 193.10.203.11 255.255.255.255 192.168.21.1
+ip route vrf BLUE 193.10.203.11 255.255.255.255 192.168.12.1
 ip ssh bulk-mode 131072
 !
 !
 !
 !
-route-map NICE_MED permit 20 
+route-map NICE_MED permit 10 
  set metric 50
 !
 route-map NICE_PREF permit 10 
  set local-preference 150
 !
-route-map BAD_MED permit 30 
+route-map BAD_MED permit 10 
  set metric 100
 !
 !
@@ -378,6 +392,7 @@ banner motd  Authorized Users Only 
 line con 0
  exec-timeout 0 0
  logging synchronous
+ login local
  stopbits 1
 line vty 0 4
  exec-timeout 0 0
